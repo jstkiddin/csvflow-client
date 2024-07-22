@@ -12,3 +12,12 @@ export interface SVGProps {
   height?: string
   width?: string
 }
+
+export interface CSVData {
+  [key: string]: string
+}
+
+export interface ImportData {
+  fileName: string
+  data: CSVData[]
+}

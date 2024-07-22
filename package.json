@@ -18,6 +18,7 @@
     "@mui/material": "^5.15.21",
     "@reduxjs/toolkit": "^2.2.6",
     "@tanstack/react-query": "^5.49.2",
+    "@types/papaparse": "^5.3.14",
     "axios": "^1.7.2",
     "framer-motion": "^11.2.12",
     "papaparse": "^5.4.1",

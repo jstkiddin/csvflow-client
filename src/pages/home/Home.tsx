@@ -1,9 +1,11 @@
-import { Box, Button, FormControl, Input } from '@chakra-ui/react'
+import { Box, Button } from '@chakra-ui/react'
 import { Table } from '../../components/table/Table'
 import styled from 'styled-components'
 import { ListBlock } from '../../components/list/ListBlock'
 import { Select } from '../../components/select/Select'
 import { memo } from 'react'
+import Import from '../../components/import/Import'
+
 const statusList = ['Pending', 'Cancelled', 'Completed']
 const typeList = ['Withdrawal', 'Refill']
 
@@ -20,19 +22,7 @@ function Home() {
             <Select optionsList={typeList} placeholder="Type" />
           </ActionBlock>
           <ActionBlock justifyContent="end">
-            <FormControl>
-              <Button>
-                Import
-                <Input
-                  type="file"
-                  accept=".csv"
-                  // hidden
-                  id="file-upload"
-                  // onChange={handleFileChange}
-                  mb={3}
-                />
-              </Button>
-            </FormControl>
+            <Import />
             <Button>Export</Button>
           </ActionBlock>
         </ComponentContainer>
