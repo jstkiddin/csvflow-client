@@ -3,6 +3,9 @@ import { Table } from '../../components/table/Table'
 import styled from 'styled-components'
 import { ListBlock } from '../../components/list/ListBlock'
 import { Select } from '../../components/select/Select'
+import { memo } from 'react'
+const statusList = ['Pending', 'Cancelled', 'Completed']
+const typeList = ['Withdrawal', 'Refill']
 
 function Home() {
   return (
@@ -13,29 +16,33 @@ function Home() {
       <ComponentContainer width="80%" flexDirection="column" gap="6rem">
         <ComponentContainer>
           <ActionBlock>
-            <Select />
-            <Select />
+            <Select optionsList={statusList} placeholder="Status" />
+            <Select optionsList={typeList} placeholder="Type" />
           </ActionBlock>
           <ActionBlock justifyContent="end">
             <FormControl>
-              <Input
-                type="file"
-                id="file-upload"
-                // onChange={handleFileChange}
-                mb={3}
-              />
+              <Button>
+                Import
+                <Input
+                  type="file"
+                  accept=".csv"
+                  // hidden
+                  id="file-upload"
+                  // onChange={handleFileChange}
+                  mb={3}
+                />
+              </Button>
             </FormControl>
-            <Button>Import</Button>
             <Button>Export</Button>
           </ActionBlock>
         </ComponentContainer>
-        <Table headers={['one', 'two', 'three']} />
+        <Table headers={['Id', 'Status', 'Type', 'Client Name', 'Amount']} />
       </ComponentContainer>
     </HomeContainer>
   )
 }
 
-export default Home
+export default memo(Home)
 
 const HomeContainer = styled(Box)`
   width: 100%;

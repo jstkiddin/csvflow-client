@@ -29,8 +29,9 @@ export const Table = ({ headers, data, caption, editable }: TableProps) => {
         <Thead>
           <Tr>
             {headers.map((header: string) => (
-              <Th>{header as string}</Th>
+              <Th color="white">{header as string}</Th>
             ))}
+            <Th color="white">Action</Th>
           </Tr>
         </Thead>
         <Tbody>

@@ -1,9 +1,17 @@
-import { Box, Button, Flex, Heading, Spacer, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { useAppSelector } from '../../app'
 import { Logo } from '../../assets/Logo'
+import { useAuth } from '../../contexts/AuthContext'
+import { User } from '../../types/User'
 
 function Navbar() {
+  const auth = useAuth()
+  const { email } = useSelector((state: User) => state)
+  const selector = useAppSelector(state => state.user)
+  // conso
   return (
     <NavBlock bg="green.600">
       <Flex justifyContent="space-between" alignItems="center">
@@ -18,11 +26,13 @@ function Navbar() {
 
         <Box display="flex" alignItems="center">
           <NavBlock>
-            <Text>something good</Text>
+            <Text>{selector.email ?? ''}</Text>
           </NavBlock>
 
           <NavBlock>
-            <Button>Logout</Button>
+            <Button bg="green.300" onClick={auth.logout}>
+              Logout
+            </Button>
           </NavBlock>
         </Box>
       </Flex>

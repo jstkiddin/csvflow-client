@@ -10,154 +10,184 @@ import {
   Collapse,
 } from '@chakra-ui/react'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import styled from 'styled-components'
 import { AuthFields } from '../../types/types'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { CredProps } from '../../types/User'
+import { KeyboardEvent } from 'react'
 
 interface AuthFormProps {
   signUp: boolean
-  authSubmit?: () => {}
+  authSubmit: ({ email, password }: CredProps) => void
+  isLoading: boolean
+  isError: boolean
+  serverError: Error | null
 }
 
-export const AuthForm = ({ signUp, authSubmit }: AuthFormProps) => {
-  const [isVisible, setIsVisible] = useBoolean(false)
+export const AuthForm = memo(
+  ({ signUp, authSubmit, isLoading, isError, serverError }: AuthFormProps) => {
+    const [isVisible, setIsVisible] = useBoolean(false)
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [confirm, setConfirm] = useState<string>('')
 
-  // const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirm, setConfirm] = useState('')
+    const {
+      register,
+      handleSubmit,
+      formState: { errors, isSubmitting },
+      setValue,
+    } = useForm<AuthFields>({
+      mode: 'onChange',
+      disabled: isLoading,
+      reValidateMode: 'onBlur',
+    })
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<AuthFields>()
+    const onSubmit: SubmitHandler<AuthFields> = (data: CredProps) => {
+      authSubmit(data)
+    }
 
-  const onSubmit: SubmitHandler<AuthFields> = data => {
-    // authSubmit()
-  }
+    const handleKeywordKeypress = (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        setValue('email', email)
+        setValue('password', password)
+      }
+    }
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
-      <FormContainer>
-        <Box gap="1rem" width="100%">
-          <FormControl mt="1rem">
-            <InputGroup>
-              <StyledChakraInput
-                {...register('email', {
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address',
-                  },
-                })}
-                type="email"
-                isInvalid={Boolean(errors.email)}
-                placeholder="Email adress"
-              />
-            </InputGroup>
+    return (
+      <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
+        <FormContainer onKeyDownCapture={handleKeywordKeypress}>
+          <Box gap="1rem" width="100%">
+            <FormControl mt="1rem">
+              <InputGroup>
+                <StyledChakraInput
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: 'Invalid email address',
+                    },
+                  })}
+                  type="email"
+                  isInvalid={Boolean(errors.email)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setEmail(e.target.value)
+                  }}
+                  placeholder="Email adress"
+                  id="email"
+                />
+              </InputGroup>
 
-            <ErrorBox>
-              <Collapse in={Boolean(errors.email)} animateOpacity>
-                {errors.email && errors.email.message}
-              </Collapse>
-            </ErrorBox>
+              <ErrorBox>
+                <Collapse in={Boolean(errors.email)} animateOpacity>
+                  {errors.email && errors.email.message}
+                </Collapse>
+              </ErrorBox>
 
-            <InputGroup>
-              <StyledChakraInput
-                {...register('password', {
-                  required: 'Password is required',
-                  minLength: {
-                    value: 6,
-                    message: 'Minimum length must be 6 characters',
-                  },
-                })}
-                isInvalid={Boolean(errors.password)}
-                type={isVisible ? 'text' : 'password'}
-                placeholder="Password"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setPassword(e.target.value)
-                }}
-              />
-              <InputRightElement>
-                <ShowPassButton
-                  size="sm"
-                  bg="transparent"
-                  height="100%"
-                  onClick={setIsVisible.toggle}
-                >
-                  {isVisible ? (
-                    <Icon as={VisibilityOff} color="gray.300" />
-                  ) : (
-                    <Icon as={Visibility} color="gray.300" />
-                  )}
-                </ShowPassButton>
-              </InputRightElement>
-            </InputGroup>
-            <ErrorBox>
-              <Collapse in={Boolean(errors.password)} animateOpacity>
-                {errors.password && errors.password.message}
-              </Collapse>
-            </ErrorBox>
-
-            {signUp && (
-              <>
-                <InputGroup>
-                  <StyledChakraInput
-                    {...register('confirm')}
-                    type={isVisible ? 'text' : 'password'}
-                    isInvalid={
-                      password !== confirm &&
-                      password !== confirm &&
-                      confirm !== ''
-                    }
-                    placeholder="Confirm password"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setConfirm(e.target.value)
-                    }}
-                  />
-                  <InputRightElement>
-                    <ShowPassButton
-                      size="sm"
-                      bg="transparent"
-                      height="100%"
-                      onClick={setIsVisible.toggle}
-                    >
-                      {isVisible ? (
-                        <Icon as={VisibilityOff} color="gray.300" />
-                      ) : (
-                        <Icon as={Visibility} color="gray.300" />
-                      )}
-                    </ShowPassButton>
-                  </InputRightElement>
-                </InputGroup>
-
-                <ErrorBox>
-                  <Collapse
-                    in={password !== confirm && confirm !== ''}
-                    animateOpacity
+              <InputGroup>
+                <StyledChakraInput
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: {
+                      value: 6,
+                      message: signUp
+                        ? 'Minimum length must be 6 characters'
+                        : 'Password ia too short',
+                    },
+                  })}
+                  isInvalid={Boolean(errors.password)}
+                  type={isVisible ? 'text' : 'password'}
+                  placeholder="Password"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setPassword(e.target.value)
+                  }}
+                  id="password"
+                />
+                <InputRightElement>
+                  <ShowPassButton
+                    size="sm"
+                    bg="transparent"
+                    height="100%"
+                    onClick={setIsVisible.toggle}
                   >
-                    {password !== confirm &&
-                      confirm !== '' &&
-                      'Passwords do not match'}
-                  </Collapse>
-                </ErrorBox>
-              </>
-            )}
-          </FormControl>
-        </Box>
+                    {isVisible ? (
+                      <Icon as={VisibilityOff} color="gray.300" />
+                    ) : (
+                      <Icon as={Visibility} color="gray.300" />
+                    )}
+                  </ShowPassButton>
+                </InputRightElement>
+              </InputGroup>
+              <ErrorBox>
+                <Collapse in={Boolean(errors.password)} animateOpacity>
+                  {errors.password && errors.password.message}
+                </Collapse>
+              </ErrorBox>
 
-        <StyledChakraButton
-          bg="green.600"
-          type="submit"
-          isLoading={isSubmitting}
-        >
-          {signUp ? 'Sign Up' : 'Sign In'}
-        </StyledChakraButton>
-      </FormContainer>
-    </form>
-  )
-}
+              {signUp && (
+                <>
+                  <InputGroup>
+                    <StyledChakraInput
+                      type={isVisible ? 'text' : 'password'}
+                      isInvalid={password !== confirm && confirm !== ''}
+                      placeholder="Confirm password"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setConfirm(e.target.value)
+                      }}
+                      id="confirm"
+                    />
+                    <InputRightElement>
+                      <ShowPassButton
+                        size="sm"
+                        bg="transparent"
+                        height="100%"
+                        onClick={setIsVisible.toggle}
+                      >
+                        {isVisible ? (
+                          <Icon as={VisibilityOff} color="gray.300" />
+                        ) : (
+                          <Icon as={Visibility} color="gray.300" />
+                        )}
+                      </ShowPassButton>
+                    </InputRightElement>
+                  </InputGroup>
+
+                  <ErrorBox>
+                    <Collapse
+                      in={password !== confirm && confirm !== ''}
+                      animateOpacity
+                    >
+                      {password !== confirm &&
+                        confirm !== '' &&
+                        'Passwords do not match'}
+                    </Collapse>
+                  </ErrorBox>
+                </>
+              )}
+            </FormControl>
+          </Box>
+
+          <Collapse in={isError} animateOpacity>
+            <Box width="100%" color="red.600">
+              {
+                //@ts-ignore
+                serverError?.response?.data?.message ?? ''
+              }
+            </Box>
+          </Collapse>
+
+          <StyledChakraButton
+            bg="green.600"
+            type="submit"
+            isLoading={isSubmitting || isLoading}
+          >
+            {signUp ? 'Sign Up' : 'Sign In'}
+          </StyledChakraButton>
+        </FormContainer>
+      </form>
+    )
+  }
+)
 
 const ShowPassButton = styled(Button)`
   &:hover {
