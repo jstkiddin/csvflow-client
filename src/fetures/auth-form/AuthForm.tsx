@@ -16,6 +16,7 @@ import { AuthFields } from '../../types/types'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { CredProps } from '../../types/User'
 import { KeyboardEvent } from 'react'
+import { ErrorBox } from '../../components/error/ErrorBox'
 
 interface AuthFormProps {
   signUp: boolean
@@ -77,12 +78,10 @@ export const AuthForm = memo(
                   id="email"
                 />
               </InputGroup>
-
-              <ErrorBox>
-                <Collapse in={Boolean(errors.email)} animateOpacity>
-                  {errors.email && errors.email.message}
-                </Collapse>
-              </ErrorBox>
+              <ErrorBox
+                inCondition={Boolean(errors.email)}
+                message={errors.email && errors.email.message}
+              />
 
               <InputGroup>
                 <StyledChakraInput
@@ -118,11 +117,10 @@ export const AuthForm = memo(
                   </ShowPassButton>
                 </InputRightElement>
               </InputGroup>
-              <ErrorBox>
-                <Collapse in={Boolean(errors.password)} animateOpacity>
-                  {errors.password && errors.password.message}
-                </Collapse>
-              </ErrorBox>
+              <ErrorBox
+                inCondition={Boolean(errors.password)}
+                message={errors.password && errors.password.message}
+              />
 
               {signUp && (
                 <>
@@ -152,16 +150,14 @@ export const AuthForm = memo(
                     </InputRightElement>
                   </InputGroup>
 
-                  <ErrorBox>
-                    <Collapse
-                      in={password !== confirm && confirm !== ''}
-                      animateOpacity
-                    >
-                      {password !== confirm &&
-                        confirm !== '' &&
-                        'Passwords do not match'}
-                    </Collapse>
-                  </ErrorBox>
+                  <ErrorBox
+                    inCondition={password !== confirm && confirm !== ''}
+                    message={
+                      password !== confirm &&
+                      confirm !== '' &&
+                      'Passwords do not match'
+                    }
+                  />
                 </>
               )}
             </FormControl>
@@ -207,13 +203,6 @@ const StyledChakraButton = styled(Button)`
   &:hover {
     background-color: #2f855a !import;
   }
-`
-const ErrorBox = styled(Box)`
-  color: #e53e3e;
-  height: 1.7rem;
-
-  font-size: 0.8rem;
-  padding: 0px !important;
 `
 
 const FormContainer = styled(Box)`

@@ -3,13 +3,20 @@ import { Table } from '../../components/table/Table'
 import styled from 'styled-components'
 import { ListBlock } from '../../components/list/ListBlock'
 import { Select } from '../../components/select/Select'
-import { memo } from 'react'
-import Import from '../../components/import/Import'
+import { memo, useCallback, useState } from 'react'
+import Import from '../../fetures/import/Import'
 
 const statusList = ['Pending', 'Cancelled', 'Completed']
 const typeList = ['Withdrawal', 'Refill']
 
 function Home() {
+  const [importDialogOpen, setImportDialogOpen] = useState<boolean>(false)
+
+  const handleImportDialogOpen = useCallback(
+    () => setImportDialogOpen(!importDialogOpen),
+    [importDialogOpen]
+  )
+
   return (
     <HomeContainer py="1rem" px="0.5rem">
       <ComponentContainer width="20%">
@@ -22,7 +29,11 @@ function Home() {
             <Select optionsList={typeList} placeholder="Type" />
           </ActionBlock>
           <ActionBlock justifyContent="end">
-            <Import />
+            <Import
+              isOpen={importDialogOpen}
+              onClose={handleImportDialogOpen}
+            />
+            <Button onClick={handleImportDialogOpen}>Import</Button>
             <Button>Export</Button>
           </ActionBlock>
         </ComponentContainer>

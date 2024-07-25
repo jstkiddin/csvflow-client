@@ -9,13 +9,13 @@ const importTransaction = async (data: ImportData) => {
 }
 
 export const useUpload = () => {
-  const { mutate, isPending, isError, error } = useMutation({
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({
     mutationFn: importTransaction,
     mutationKey: ['importTransaction'],
     onSuccess: data => {
-      // auth.login(data.token)
       console.log('import', data)
     },
   })
-  return { mutate, isPending, isError, error }
+  console.log('isSuccess', isSuccess)
+  return { mutate, isPending, isError, error, isSuccess }
 }

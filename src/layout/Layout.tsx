@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Navbar from '../components/navbar/Navbar'
+import Navbar from '../fetures/navbar/Navbar'
 import { LayoutProps } from '../types/types'
 
 export const Layout = ({ children }: LayoutProps) => {

@@ -1,6 +1,6 @@
 import { Box, Text, Link as ChakraLink } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
-import { AuthForm } from '../../components/auth-form/AuthForm'
+import { AuthForm } from '../../fetures/auth-form/AuthForm'
 import { Loader } from '../../components/loader/Loader'
 import { useSignUp } from '../../app/services/auth/signup.service'
 import { CredProps } from '../../types/User'
